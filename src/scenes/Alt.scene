@@ -1,0 +1,104 @@
+{
+    "id": "1bc9ed17-9710-40ac-9398-d4bfa1071316",
+    "sceneType": "SCENE",
+    "settings": {
+        "preloadPackFiles": [],
+        "createMethodName": "editorCreate",
+        "sceneKey": "Alt",
+        "borderWidth": 1280,
+        "borderHeight": 720
+    },
+    "displayList": [
+        {
+            "type": "Image",
+            "id": "c07acd13-ba7e-492a-a21c-e5409511cf99",
+            "label": "background",
+            "texture": {
+                "key": "background"
+            },
+            "x": 641,
+            "y": 358,
+            "scaleX": 0.77,
+            "scaleY": 0.7
+        },
+        {
+            "type": "Container",
+            "id": "196e4d7b-35a4-47b9-a309-b65f6503c31e",
+            "label": "room_container",
+            "scope": "CLASS",
+            "x": 483,
+            "y": 360,
+            "list": [
+                {
+                    "type": "Image",
+                    "id": "359ae896-828a-4e1e-9430-3d7f145b8dc7",
+                    "label": "frame_room",
+                    "texture": {
+                        "key": "frame_room"
+                    },
+                    "x": 157,
+                    "scaleX": 0.5,
+                    "scaleY": 0.5
+                },
+                {
+                    "type": "Sprite",
+                    "id": "0493a2a4-a7f6-4cb9-9a44-909b42f228ee",
+                    "label": "add_computer",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.width": 512,
+                    "hitArea.height": 512,
+                    "texture": {
+                        "key": "add_computer"
+                    },
+                    "y": 112,
+                    "scaleX": 0.1,
+                    "scaleY": 0.1
+                },
+                {
+                    "type": "Sprite",
+                    "id": "5281d545-d430-4e94-a513-5d9be24be026",
+                    "label": "delete_room",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.width": 512,
+                    "hitArea.height": 512,
+                    "texture": {
+                        "key": "delete_room"
+                    },
+                    "x": 317,
+                    "y": 102,
+                    "scaleX": 0.1,
+                    "scaleY": 0.1
+                },
+                {
+                    "type": "Sprite",
+                    "id": "54303962-ffba-4eab-aa31-782367214864",
+                    "label": "computer",
+                    "scope": "CLASS",
+                    "hitArea.shape": "RECTANGLE",
+                    "hitArea.width": 512,
+                    "hitArea.height": 512,
+                    "texture": {
+                        "key": "computer"
+                    },
+                    "x": 156,
+                    "y": -30,
+                    "scaleX": 0.25,
+                    "scaleY": 0.25,
+                    "tintTopLeft": "#fbff21",
+                    "tintTopRight": "#fbff21",
+                    "tintBottomLeft": "#fbff21",
+                    "tintBottomRight": "#fbff21"
+                }
+            ]
+        }
+    ],
+    "plainObjects": [],
+    "meta": {
+        "app": "Phaser Editor 2D - Scene Editor",
+        "url": "https://phasereditor2d.com",
+        "contentType": "phasereditor2d.core.scene.SceneContentType",
+        "version": 4
+    }
+}
