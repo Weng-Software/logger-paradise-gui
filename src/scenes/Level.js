@@ -1,128 +1,108 @@
 // You can write more code here
-class Computer extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, tint) {
-        super(scene, x, y, 'computer');
-	
-        // Apply the provided tint (if any)
-        if (tint !== undefined) {
-            this.setTint(tint);  // Set the tint to the passed value
-        }
-		
-        // Adjust size and interactive settings
-        this.setScale(0.25);
-        this.setInteractive(new Phaser.Geom.Rectangle(0, 0, this.width, this.height), Phaser.Geom.Rectangle.Contains);
-
-        // Add click event
-        this.on('pointerdown', () => {
-            console.log("Computer clicked!");
-        });
-		
-        // Add this sprite to the scene
-        scene.add.existing(this);
+function createComputer(scene, x, y, tint) {
+    const computer = scene.add.sprite(x, y, 'computer');
+    if (tint !== undefined) {
+        computer.setTint(tint); // Set the tint to the passed value
     }
+    computer.setScale(0.25);
+    computer.setInteractive(new Phaser.Geom.Rectangle(0, 0, computer.width, computer.height), Phaser.Geom.Rectangle.Contains);
+
+    computer.on('pointerdown', () => {
+        console.log("Computer clicked!");
+    });
+
+    return computer;
 }
 
-class ContainerRoom extends Phaser.GameObjects.Container {
-    constructor(scene, x, y) {
-        super(scene, x, y);
-		
-        // frame_room
-        const frame_room = scene.add.image(157, 0, "frame_room");
-        frame_room.scaleX = 0.5;
-        frame_room.scaleY = 0.5;
-        this.add(frame_room);
+function createContainerRoom(scene, x, y) {
+    const container = scene.add.container(x, y);
 
-        // add_computer
-        const add_computer = scene.add.sprite(0, 112, "add_computer");
-        add_computer.setInteractive(new Phaser.Geom.Rectangle(0, 0, 512, 512), Phaser.Geom.Rectangle.Contains);
-        add_computer.scaleX = 0.1;
-        add_computer.scaleY = 0.1;
-        this.add(add_computer);
+    // Add the frame_room
+    const frameRoom = scene.add.image(157, 0, "frame_room");
+    frameRoom.setScale(0.5);
+    container.add(frameRoom);
 
-        // delete_room
-        const delete_room = scene.add.sprite(317, 102, "delete_room");
-        delete_room.setInteractive(new Phaser.Geom.Rectangle(0, 0, 512, 512), Phaser.Geom.Rectangle.Contains);
-        delete_room.scaleX = 0.1;
-        delete_room.scaleY = 0.1;
-        this.add(delete_room);
+    // Add the "add computer" button
+    const addComputer = scene.add.sprite(0, 112, "add_computer");
+    addComputer.setInteractive(new Phaser.Geom.Rectangle(0, 0, 512, 512), Phaser.Geom.Rectangle.Contains);
+    addComputer.setScale(0.1);
+    container.add(addComputer);
 
-        // Add computer (only 1 computer per room)
-        add_computer.on('pointerdown', () => {
-            console.log("Add computer clicked!");
-            scene.addComputerConfirm_Container.visible = true;
+    // Add the "delete room" button
+    const deleteRoom = scene.add.sprite(317, 102, "delete_room");
+    deleteRoom.setInteractive(new Phaser.Geom.Rectangle(0, 0, 512, 512), Phaser.Geom.Rectangle.Contains);
+    deleteRoom.setScale(0.1);
+    container.add(deleteRoom);
 
-            scene.yes_Box_2.once('pointerdown', () => {
-                scene.addComputerConfirm_Container.visible = false;
-				add_computer.visible = false;
-                this.addComputer(scene);
-            });
+    // Logic for adding a computer
+    addComputer.on('pointerdown', () => {
+        console.log("Add computer clicked!");
+        scene.addComputerConfirm_Container.visible = true;
 
-            scene.no_Box_2.once('pointerdown', () => {
-                scene.addComputerConfirm_Container.visible = false;
-            });
+        scene.yes_Box_2.once('pointerdown', () => {
+            scene.addComputerConfirm_Container.visible = false;
+            addComputer.visible = false;
+            addComputerToContainer(scene, container);
         });
 
-        // Click event for deleting the room
-        delete_room.on('pointerdown', () => {
-            console.log("Delete room clicked!");
-            scene.deleteRoomConfirm_Container.visible = true;
+        scene.no_Box_2.once('pointerdown', () => {
+            scene.addComputerConfirm_Container.visible = false;
+        });
+    });
 
-            scene.yes_Box_1.once('pointerdown', () => {
-				// Identify the container to delete
-				const containerIndex = scene.allContainers.indexOf(this);
-				if (containerIndex > -1) {
-					// Remove the container from the scene and the array
-					scene.allContainers.splice(containerIndex, 1);
-					this.destroy();
+    // Logic for deleting a room
+    deleteRoom.on('pointerdown', () => {
+        console.log("Delete room clicked!");
+        scene.deleteRoomConfirm_Container.visible = true;
 
-					// Update the positions of remaining containers
-					scene.realignContainersAfterDeletion();
-
-					console.log(`Container ${containerIndex + 1} deleted.`);
-				}
-				scene.deleteRoomConfirm_Container.visible = false
-            });
-
-            scene.no_Box_1.once('pointerdown', () => {
-				scene.deleteRoomConfirm_Container.visible = false;
-            });
+        scene.yes_Box_1.once('pointerdown', () => {
+            const containerIndex = scene.allContainers.indexOf(container);
+            if (containerIndex > -1) {
+                scene.allContainers.splice(containerIndex, 1);
+                container.destroy();
+                scene.realignContainersAfterDeletion();
+                console.log(`Container ${containerIndex + 1} deleted.`);
+            }
+            scene.deleteRoomConfirm_Container.visible = false;
         });
 
-        // Add this container to the scene
-        scene.add.existing(this);
-    }
-	
-    /**
-     * Adds a computer to this container.
-     * @param {Phaser.Scene} scene - The current scene.
-     */
-    addComputer(scene) {
-		var computerTint = undefined;
-		scene.chooseComputerLog_Container.visible = true;
-		scene.readInfoLog_Box.on('pointerdown', () => {
-			computerTint = 0xFBFF21;
-			console.log("Computer wants to read info logs!");
-			scene.chooseComputerLog_Container.visible = false;
-			const computer = new Computer(scene, 156, -30, computerTint); // Adjust position as needed
-			this.add(computer);
-		});
-		scene.readWarningLog_Box.on('pointerdown', () => {
-			computerTint = 0xFF5733;
-			console.log("Computer wants to read warning logs!");
-			scene.chooseComputerLog_Container.visible = false;
-			const computer = new Computer(scene, 156, -30, computerTint); // Adjust position as needed
-			this.add(computer);
-		});
-		scene.readErrorLog_Box.on('pointerdown', () => {
-			computerTint = 0xFF2C2C;
-			console.log("Computer wants to read error logs!");
-			scene.chooseComputerLog_Container.visible = false;
-			const computer = new Computer(scene, 156, -30, computerTint); // Adjust position as needed
-			this.add(computer);
-		});
-        console.log("Computer added to this room!");
-    }
+        scene.no_Box_1.once('pointerdown', () => {
+            scene.deleteRoomConfirm_Container.visible = false;
+        });
+    });
+
+    return container;
 }
+
+function addComputerToContainer(scene, container) {
+    let computerTint = undefined;
+
+    scene.chooseComputerLog_Container.visible = true;
+
+    scene.readInfoLog_Box.once('pointerdown', () => {
+        computerTint = 0xFBFF21;
+        scene.chooseComputerLog_Container.visible = false;
+        const computer = createComputer(scene, 156, -30, computerTint);
+        container.add(computer);
+    });
+
+    scene.readWarningLog_Box.once('pointerdown', () => {
+        computerTint = 0xFF5733;
+        scene.chooseComputerLog_Container.visible = false;
+        const computer = createComputer(scene, 156, -30, computerTint);
+        container.add(computer);
+    });
+
+    scene.readErrorLog_Box.once('pointerdown', () => {
+        computerTint = 0xFF2C2C;
+        scene.chooseComputerLog_Container.visible = false;
+        const computer = createComputer(scene, 156, -30, computerTint);
+        container.add(computer);
+    });
+
+    console.log("Computer added to the container!");
+}
+
 /* START OF COMPILED CODE */
 
 class Level extends Phaser.Scene {
@@ -361,29 +341,21 @@ class Level extends Phaser.Scene {
 	/**
      * Adds a new room container and updates positions.
      */
-    addNewRoomContainer() {
-        this.addRoomConfirm_Container.visible = false;
+	addNewRoomContainer() {
+		this.addRoomConfirm_Container.visible = false;
 
-        // Create a new ContainerRoom
-        const roomContainer = new ContainerRoom(this, 0, 360);
+		// Use createContainerRoom instead of instantiating a class
+		const roomContainer = createContainerRoom(this, 0, 360);
 
-        // Add to the containers array and update positions
-        this.children.moveBelow(roomContainer, this.addRoomConfirm_Container);
-        this.children.moveBelow(roomContainer, this.deleteRoomConfirm_Container);
-        this.children.moveBelow(roomContainer, this.addComputerConfirm_Container);
-        this.children.moveBelow(roomContainer, this.chooseComputerLog_Container);
-        this.allContainers.splice(this.allContainers.length - 1, 0, roomContainer); // Insert before frame_addroom
+		// Manage container order
+		this.children.moveBelow(roomContainer, this.addRoomConfirm_Container);
+		this.children.moveBelow(roomContainer, this.deleteRoomConfirm_Container);
+		this.children.moveBelow(roomContainer, this.addComputerConfirm_Container);
+		this.children.moveBelow(roomContainer, this.chooseComputerLog_Container);
 
-        this.updateContainerPositions();
-    }
-	
-	/**
-	 * Adds a computer to the specified room container.
-	 */
-	addComputerToRoom(roomContainer) {
-		const computer = new Computer(this, 0, 0); // Adjust position as needed
-		roomContainer.add(computer);
-		console.log("Computer added to room!");
+		// Add to allContainers array
+		this.allContainers.splice(this.allContainers.length - 1, 0, roomContainer);
+		this.updateContainerPositions();
 	}
 
 	/**
@@ -406,7 +378,7 @@ class Level extends Phaser.Scene {
 			}
 		});
 	}
-	
+
 	/**
 	 * Shifts all containers in `this.allContainers` by a specified direction.
 	 * @param {number} direction - The direction to shift (1 for left, -1 for right).
@@ -417,7 +389,7 @@ class Level extends Phaser.Scene {
 			container.x += direction * shiftAmount;
 		});
 	}
-	
+
 	/**
 	 * Realigns all containers to close the gap left by a deleted container.
 	 */
