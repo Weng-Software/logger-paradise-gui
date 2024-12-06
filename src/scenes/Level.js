@@ -74,33 +74,38 @@ function createContainerRoom(scene, x, y) {
     return container;
 }
 
-function addComputerToContainer(scene, container) {
-    let computerTint = undefined;
+function getLogTint(logType) {
+    const tints = {
+        info: 0xFBFF21,
+        warning: 0xFF5733,
+        error: 0xFF2C2C
+    };
+    return tints[logType] || 0xFFFFFF; // Default to white if logType is undefined
+}
 
+function renderComputersInContainer(container) {
+    container.each(child => {
+        if (child.logType) {
+            child.setTint(getLogTint(child.logType));
+        }
+    });
+}
+
+function addComputerToContainer(scene, container) {
     scene.chooseComputerLog_Container.visible = true;
 
-    scene.readInfoLog_Box.once('pointerdown', () => {
-        computerTint = 0xFBFF21;
-        scene.chooseComputerLog_Container.visible = false;
-        const computer = createComputer(scene, 156, -30, computerTint);
+    const addComputerWithLogType = (logType) => {
+        const tint = getLogTint(logType);
+        const computer = createComputer(scene, 156, -30, tint);
+        computer.logType = logType; // Associate the log type with the computer
         container.add(computer);
-    });
-
-    scene.readWarningLog_Box.once('pointerdown', () => {
-        computerTint = 0xFF5733;
+        console.log(`Added computer with log type: ${logType} and tint: ${tint.toString(16)}`);
         scene.chooseComputerLog_Container.visible = false;
-        const computer = createComputer(scene, 156, -30, computerTint);
-        container.add(computer);
-    });
+    };
 
-    scene.readErrorLog_Box.once('pointerdown', () => {
-        computerTint = 0xFF2C2C;
-        scene.chooseComputerLog_Container.visible = false;
-        const computer = createComputer(scene, 156, -30, computerTint);
-        container.add(computer);
-    });
-
-    console.log("Computer added to the container!");
+    scene.readInfoLog_Box.once('pointerdown', () => addComputerWithLogType('info'));
+    scene.readWarningLog_Box.once('pointerdown', () => addComputerWithLogType('warning'));
+    scene.readErrorLog_Box.once('pointerdown', () => addComputerWithLogType('error'));
 }
 
 /* START OF COMPILED CODE */
@@ -302,6 +307,7 @@ class Level extends Phaser.Scene {
 	// Write more your code here
 	create() {
 		this.editorCreate();
+		
 		this.allContainers = [this.frame_addroom];
 
 		// Array to store all containers including frame_addroom and room_containers
