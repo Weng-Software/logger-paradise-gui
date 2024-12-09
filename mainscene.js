@@ -6,6 +6,20 @@ class mainscene extends Phaser.Scene {
     create() {
         this.frameArray = [];
 
+        this.bgMusic = this.sound.add('bgMusic');
+        var bgMusicConfig = {
+            mute: false,
+            volume: 0.2,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.bgMusic.play(bgMusicConfig);
+
+        this.click = this.sound.add('click');
+
         this.background = this.add.image(0,0,'background');
         this.background.setOrigin(0,0);
         this.background.setScale(0.77,0.69);
@@ -25,6 +39,7 @@ class mainscene extends Phaser.Scene {
         decideLogBox.setDepth(10);
 
         this.addRoom.on('pointerdown', (pointer) => {
+            this.click.play();
             const room = new createRoomContainer(this, decideLogBox);
             this.frameArray.splice(this.frameArray.length - 1,0,room);
             updateFrames(this, this.frameArray);
@@ -36,6 +51,7 @@ class mainscene extends Phaser.Scene {
         this.leftArrow.setScale(0.5,0.5);
         this.leftArrow.setInteractive();
         this.leftArrow.on('pointerdown', (pointer) => {
+            this.click.play();
             var direction = 1;
             moveFrames(this.frameArray,direction);
         });
@@ -45,6 +61,7 @@ class mainscene extends Phaser.Scene {
         this.rightArrow.setScale(0.5,0.5);
         this.rightArrow.setInteractive();
         this.rightArrow.on('pointerdown', (pointer) => {
+            this.click.play();
             var direction = -1;
             moveFrames(this.frameArray,direction);
         });
@@ -93,6 +110,7 @@ function deleteRoom(scene, roomContainer) {
     deleteRoom.setScale(0.1,0.1);
     deleteRoom.setInteractive();
     deleteRoom.on('pointerdown', (pointer) => {
+        scene.click.play();
         // Find the index of the container in the frame array
         const index = scene.frameArray.indexOf(roomContainer);
         if (index !== -1) {
@@ -115,6 +133,7 @@ function addComputer(scene, roomContainer, decideLogBox) {
     addComputer.setInteractive();
 
     addComputer.on('pointerdown', (pointer) => {
+        scene.click.play();
         decideLogBox.visible = true;
         addComputer.visible = false;
     });
@@ -133,6 +152,7 @@ function decideLog(scene, roomContainer) {
     chooseInfoLog.setScale(0.5);
     chooseInfoLog.setInteractive();
     chooseInfoLog.on('pointerdown', (pointer) => {
+        scene.click.play();
         roomContainer.add(infoLogComputer(scene)); // No more error, since roomContainer is now accessible
         chooseComputerLogContainer.visible = false;
     });
@@ -142,6 +162,7 @@ function decideLog(scene, roomContainer) {
     chooseWarningLog.setScale(0.5);
     chooseWarningLog.setInteractive();
     chooseWarningLog.on('pointerdown', (pointer) => {
+        scene.click.play();
         roomContainer.add(warningLogComputer(scene)); // No more error, since roomContainer is now accessible
         chooseComputerLogContainer.visible = false;
     });
@@ -151,6 +172,7 @@ function decideLog(scene, roomContainer) {
     chooseErrorLog.setScale(0.5);
     chooseErrorLog.setInteractive();
     chooseErrorLog.on('pointerdown', (pointer) => {
+        scene.click.play();
         roomContainer.add(errorLogComputer(scene)); // No more error, since roomContainer is now accessible
         chooseComputerLogContainer.visible = false;
     });
