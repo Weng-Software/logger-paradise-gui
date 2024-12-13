@@ -9,12 +9,8 @@ class mainscene extends Phaser.Scene {
         this.bgMusic = this.sound.add('bgMusic');
         var bgMusicConfig = {
             mute: false,
-            volume: 0.2,
-            rate: 1,
-            detune: 0,
-            seek: 0,
+            volume: 0.6,
             loop: true,
-            delay: 0
         }
         this.bgMusic.play(bgMusicConfig);
 

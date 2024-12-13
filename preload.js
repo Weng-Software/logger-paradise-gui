@@ -16,7 +16,7 @@ class preload extends Phaser.Scene {
         this.load.image('choose info log', 'Assets/ChooseInfoLog_Box.png');
         this.load.image('choose warning log', 'Assets/ChooseWarningLog_Box.png');
         this.load.image('choose error log', 'Assets/ChooseErrorLog_Box.png');
-        this.load.audio('bgMusic', 'Assets/bgMusic.mp3');
+        this.load.audio('bgMusic', 'Assets/bgMusic02.mp3');
         this.load.audio('click', 'Assets/click.mp3');
     }
 
